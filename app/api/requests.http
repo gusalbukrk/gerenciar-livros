@@ -1,0 +1,41 @@
+GET http://localhost:3000/api/livros
+
+###
+
+GET http://localhost:3000/api/livros/1
+
+###
+
+POST http://localhost:3000/api/livros
+Content-Type: application/json
+
+{
+  "titulo": "...",
+  "autor": "Autor 1",
+  "anoPublicacao": 2023,
+  "genero": "Ficção",
+  "estoqueQuantidade": 5
+}
+
+###
+
+PATCH http://localhost:3000/api/livros/1
+Content-Type: application/json
+
+{
+  "titulo": "Título 1"
+}
+
+###
+
+DELETE http://localhost:3000/api/livros/2
+
+###
+
+POST http://localhost:3000/api/register
+Content-Type: application/json
+
+{
+  "email": "gusalbukrk@outlook.com",
+  "senha": "123456"
+}
