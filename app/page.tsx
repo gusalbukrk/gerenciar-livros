@@ -1,7 +1,9 @@
-import LivroCard from "./components/LivroCard";
 import LivrosTable from "./components/LivrosTable";
 import { generateApiUrl, naturalSort } from "./utils";
 import { Livro } from "@/app/generated/prisma";
+import { getServerSession } from "next-auth";
+
+import { authOptions } from "./api/auth/authOptions";
 
 interface Props {
   searchParams: Promise<{
@@ -11,18 +13,20 @@ interface Props {
   }>;
 }
 
-// TODO: remove
+// TODO: should remove it?
 export const dynamic = "force-dynamic";
 
-async function LivrosPage({ searchParams }: Props) {
-  const searchParamsAwaited = await searchParams;
-  const searchParamsMinusOrdenarPor = new URLSearchParams(
-    Object.entries(searchParamsAwaited).filter(([key]) => key !== "ordenarPor")
+async function Page(props: Props) {
+  const session = await getServerSession(authOptions);
+
+  const searchParams = await props.searchParams;
+  const searchParamsStr = new URLSearchParams(
+    Object.entries(searchParams).filter(([key]) => key !== "ordenarPor")
   ).toString();
 
-  const { genero, ordenarPor = "id" } = searchParamsAwaited;
-  const ordem = ["asc", "desc"].includes(searchParamsAwaited.ordem ?? "")
-    ? searchParamsAwaited.ordem!
+  const { genero, ordenarPor = "id" } = searchParams;
+  const ordem = ["asc", "desc"].includes(searchParams.ordem ?? "")
+    ? searchParams.ordem!
     : "asc";
 
   const resp = await fetch(generateApiUrl("/livros"));
@@ -35,16 +39,14 @@ async function LivrosPage({ searchParams }: Props) {
 
   return (
     <main>
-      <h1>Livros</h1>
-      {genero !== undefined && <h2>Gênero: {genero}</h2>}
-      {new Date().toLocaleTimeString("pt-BR")}
+      {/* <h1 className="text-2xl font-bold mb-5">Livros</h1> */}
       <LivrosTable
         livros={livrosSorted}
-        searchParamsMinusOrdenarPor={searchParamsMinusOrdenarPor}
+        searchParamsStr={searchParamsStr}
+        isLogged={session !== null}
       />
-      <LivroCard />
     </main>
   );
 }
 
-export default LivrosPage;
+export default Page;

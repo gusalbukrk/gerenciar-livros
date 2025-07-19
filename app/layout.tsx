@@ -14,7 +14,7 @@ const ubuntu = Ubuntu({
 });
 
 export const metadata: Metadata = {
-  title: "Gerenciar livros",
+  title: "Gerenciar Livros — Sistema CRUD básico para livros",
   description: "Prova Técnica para a vaga de Analista de Sistemas Jr.",
 };
 

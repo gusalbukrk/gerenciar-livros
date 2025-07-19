@@ -15,3 +15,6 @@ export const naturalSort = createNewSortInstance({
     sensitivity: "base",
   }).compare,
 });
+
+export const getModalElement = (elementId: string) =>
+  document.getElementById(`${elementId}`) as HTMLDialogElement;

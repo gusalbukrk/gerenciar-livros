@@ -1,39 +1,101 @@
+"use client";
+
 import Link from "next/link";
 import { Livro } from "@/app/generated/prisma";
+import DeleteButton from "./DeleteButton";
+import EditButton from "./EditButton";
+import { useState } from "react";
+import CreateButton from "./CreateButton";
 
 interface Props {
   livros: Livro[];
-  searchParamsMinusOrdenarPor: string;
+  searchParamsStr: string;
+  isLogged: boolean;
 }
 
-function LivrosTable({ livros, searchParamsMinusOrdenarPor }: Props) {
+function LivrosTable({
+  livros: initialLivros,
+  searchParamsStr,
+  isLogged,
+}: Props) {
+  const [livros, setLivros] = useState<Livro[]>(initialLivros);
+
+  const handleDeleteSuccess = (id: number) => {
+    setLivros((prevLivros) => prevLivros.filter((livro) => livro.id !== id));
+  };
+
+  const handleCreateSuccess = (livroCreated: Livro) => {
+    setLivros((prevLivros) => [...prevLivros, livroCreated]);
+  };
+
+  const handleEditSuccess = (livroEdited: Livro) => {
+    setLivros((prevLivros) =>
+      prevLivros.map((l) => {
+        return l.id === livroEdited.id ? livroEdited : l;
+      })
+    );
+  };
+
   return (
-    <div className="overflow-x-auto rounded-box border border-base-content/5 bg-base-100">
-      <table className="table">
-        <thead>
-          <tr>
-            <th>
-              <Link href={`?${searchParamsMinusOrdenarPor}&ordenarPor=id`}>
-                ID
-              </Link>
-            </th>
-            <th>
-              <Link href={`?${searchParamsMinusOrdenarPor}&ordenarPor=titulo`}>
-                Título
-              </Link>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          {livros.slice(0, 10).map((livro) => (
-            <tr key={livro.id}>
-              <td>{livro.id}</td>
-              <td>{livro.titulo}</td>
+    <>
+      <CreateButton onSuccess={handleCreateSuccess} />
+      <div className="overflow-x-auto">
+        <table className="table table-md">
+          <thead>
+            <tr>
+              <th>
+                <Link href={`?${searchParamsStr}&ordenarPor=id`}>#</Link>
+              </th>
+              <th>
+                <Link href={`?${searchParamsStr}&ordenarPor=titulo`}>
+                  Título
+                </Link>
+              </th>
+              <th>
+                <Link href={`?${searchParamsStr}&ordenarPor=autor`}>Autor</Link>
+              </th>
+              <th>
+                <Link href={`?${searchParamsStr}&ordenarPor=anoPublicacao`}>
+                  Ano de publicação
+                </Link>
+              </th>
+              <th>
+                <Link href={`?${searchParamsStr}&ordenarPor=genero`}>
+                  Gênero
+                </Link>
+              </th>
+              <th>
+                <Link href={`?${searchParamsStr}&ordenarPor=estoqueQuantidade`}>
+                  Quantidade
+                </Link>
+              </th>
+              {isLogged && <th></th>}
             </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+          </thead>
+          <tbody>
+            {livros.map((livro) => (
+              <tr key={livro.id} className="hover:bg-base-300">
+                <td>{livro.id}</td>
+                <td>{livro.titulo}</td>
+                <td>{livro.autor}</td>
+                <td>{livro.anoPublicacao}</td>
+                <td>{livro.genero}</td>
+                <td>{livro.estoqueQuantidade}</td>
+                {isLogged && (
+                  <td className="flex gap-5">
+                    <EditButton livro={livro} onSuccess={handleEditSuccess} />
+                    <DeleteButton
+                      id={livro.id}
+                      onDeleteSuccess={handleDeleteSuccess}
+                    />
+                  </td>
+                )}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
   );
 }
 
