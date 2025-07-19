@@ -1,5 +1,5 @@
 {
-  "name": "cadastrar-livros",
+  "name": "gerenciar-livros",
   "version": "0.1.0",
   "private": true,
   "scripts": {

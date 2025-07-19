@@ -27,7 +27,7 @@ function NavBar() {
       <div className="flex-1 flex items-center">
         <Image src={logo} alt="Site logo" width={64} />
         <Link href="/" className="btn btn-ghost text-xl">
-          cadastrar livros
+          gerenciar livros
         </Link>
       </div>
       <div className="flex-none">
@@ -93,7 +93,7 @@ function NavBar() {
           </li>
           <li>
             <Link
-              href="https://github.com/gusalbukrk/cadastrar-livros"
+              href="https://github.com/gusalbukrk/gerenciar-livros"
               target="_blank"
             >
               <FaGithub className="text-2xl" />

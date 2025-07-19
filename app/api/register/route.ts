@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
   });
 
   await resend.emails.send({
-    from: "cadastrar-livros@gusalbukrk.com",
+    from: "gerenciar-livros@gusalbukrk.com",
     to: user.email!,
     subject: "Welcome",
     react: WelcomeTemplate({ name: user.email! }),

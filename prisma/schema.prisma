@@ -16,7 +16,7 @@ generator zod {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:password@localhost:3306/cadastrar-livros"
+  url      = "mysql://root:password@localhost:3306/gerenciar-livros"
 }
 
 // =====
