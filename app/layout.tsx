@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Ubuntu } from "next/font/google";
 
 import AuthProvider from "./auth/Provider";
-import NavBar from "./NavBar";
+import NavBar from "./components/NavBar";
 
 import "./globals.css";
 import { ThemeProvider } from "next-themes";

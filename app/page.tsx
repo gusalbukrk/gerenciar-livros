@@ -1,14 +1,50 @@
-import { getServerSession } from "next-auth";
+import LivroCard from "./components/LivroCard";
+import LivrosTable from "./components/LivrosTable";
+import { generateApiUrl, naturalSort } from "./utils";
+import { Livro } from "@/app/generated/prisma";
 
-import { authOptions } from "./api/auth/authOptions";
+interface Props {
+  searchParams: Promise<{
+    genero: string;
+    ordenarPor: keyof Livro;
+    ordem: "asc" | "desc";
+  }>;
+}
 
-async function Home() {
-  // accessing the session on the server
-  const session = await getServerSession(authOptions);
+// TODO: remove
+export const dynamic = "force-dynamic";
+
+async function LivrosPage({ searchParams }: Props) {
+  const searchParamsAwaited = await searchParams;
+  const searchParamsMinusOrdenarPor = new URLSearchParams(
+    Object.entries(searchParamsAwaited).filter(([key]) => key !== "ordenarPor")
+  ).toString();
+
+  const { genero, ordenarPor = "id" } = searchParamsAwaited;
+  const ordem = ["asc", "desc"].includes(searchParamsAwaited.ordem ?? "")
+    ? searchParamsAwaited.ordem!
+    : "asc";
+
+  const resp = await fetch(generateApiUrl("/livros"));
+  const livros: Livro[] = await resp.json();
+
+  const livrosSorted =
+    ordem === "asc"
+      ? naturalSort(livros).asc((l) => l[ordenarPor])
+      : naturalSort(livros).desc((l) => l[ordenarPor]);
 
   return (
-    <main>Welcome to the homepage, {session?.user?.name ?? "stranger"}</main>
+    <main>
+      <h1>Livros</h1>
+      {genero !== undefined && <h2>Gênero: {genero}</h2>}
+      {new Date().toLocaleTimeString("pt-BR")}
+      <LivrosTable
+        livros={livrosSorted}
+        searchParamsMinusOrdenarPor={searchParamsMinusOrdenarPor}
+      />
+      <LivroCard />
+    </main>
   );
 }
 
-export default Home;
+export default LivrosPage;

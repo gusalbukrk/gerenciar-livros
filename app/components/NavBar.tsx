@@ -23,7 +23,7 @@ function NavBar() {
   }, []);
 
   return (
-    <div className="navbar bg-base-100 shadow-sm mb-5">
+    <div className="navbar bg-base-100 shadow-sm mb-5 px-0">
       <div className="flex-1 flex items-center">
         <Image src={logo} alt="Site logo" width={64} />
         <Link href="/" className="btn btn-ghost text-xl">
