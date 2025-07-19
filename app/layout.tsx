@@ -5,6 +5,7 @@ import AuthProvider from "./auth/Provider";
 import NavBar from "./NavBar";
 
 import "./globals.css";
+import { ThemeProvider } from "next-themes";
 
 const ubuntu = Ubuntu({
   variable: "--font-ubuntu",
@@ -23,13 +24,15 @@ function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR">
-      <body className={`antialiased ${ubuntu.variable}`}>
+    <html lang="pt-BR" suppressHydrationWarning data-theme="light">
+      <body className={`antialiased ${ubuntu.variable} max-w-7xl mx-auto`}>
         <AuthProvider>
-          <>
-            <NavBar />
-            {children}
-          </>
+          <ThemeProvider enableSystem={false} defaultTheme="dark">
+            <>
+              <NavBar />
+              {children}
+            </>
+          </ThemeProvider>
         </AuthProvider>
       </body>
     </html>
