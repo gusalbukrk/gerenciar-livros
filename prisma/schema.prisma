@@ -16,7 +16,7 @@ generator zod {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:password@localhost:3306/appdb" // TODO: rename db
+  url      = "mysql://root:password@localhost:3306/cadastrar-livros"
 }
 
 // =====
@@ -107,7 +107,7 @@ model Livro {
   titulo            String /// @zod.string.min(3, { message: "min length error" })
   autor             String
   // autor             String @db.VarChar(100)
-  anoPublicacao     Int    @db.Year
+  anoPublicacao     Int // MySQL's YEAR (@db.Year) only supports range of 1901 to 2155
   genero            String
   estoqueQuantidade Int
 

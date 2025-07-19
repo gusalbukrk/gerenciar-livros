@@ -6,13 +6,13 @@ import {
   LivroDeleteArgsSchema,
 } from "@/app/generated/zod/index";
 
-interface GetRequestProps {
-  params: {
+interface Props {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export async function GET(request: NextRequest, props: GetRequestProps) {
+export async function GET(request: NextRequest, props: Props) {
   const params = await props.params;
   const id = parseInt(params.id);
 
@@ -23,7 +23,7 @@ export async function GET(request: NextRequest, props: GetRequestProps) {
   return NextResponse.json(livro ?? {});
 }
 
-export async function PATCH(request: NextRequest, props: GetRequestProps) {
+export async function PATCH(request: NextRequest, props: Props) {
   const params = await props.params;
   const id = parseInt(params.id);
   const body = await request.json();
@@ -42,15 +42,15 @@ export async function PATCH(request: NextRequest, props: GetRequestProps) {
       data: validation.data,
     });
     return NextResponse.json(livro);
-  } catch (error: any) {
-    if (error.code === "P2025") {
+  } catch (error) {
+    if ((error as { code: string }).code === "P2025") {
       // livro doesn't exist
       return NextResponse.json({}, { status: 404 });
     }
   }
 }
 
-export async function DELETE(request: NextRequest, props: GetRequestProps) {
+export async function DELETE(request: NextRequest, props: Props) {
   const params = await props.params;
   const id = parseInt(params.id);
 
@@ -67,8 +67,8 @@ export async function DELETE(request: NextRequest, props: GetRequestProps) {
       where: { id },
     });
     return NextResponse.json(livro);
-  } catch (error: any) {
-    if (error.code === "P2025") {
+  } catch (error) {
+    if ((error as { code: string }).code === "P2025") {
       // livro doesn't exist
       return NextResponse.json({}, { status: 404 });
     }

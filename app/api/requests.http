@@ -10,10 +10,10 @@ POST http://localhost:3000/api/livros
 Content-Type: application/json
 
 {
-  "titulo": "...",
-  "autor": "Autor 1",
+  "titulo": "Título 50",
+  "autor": "Autor 2",
   "anoPublicacao": 2023,
-  "genero": "Ficção",
+  "genero": "Ação",
   "estoqueQuantidade": 5
 }
 

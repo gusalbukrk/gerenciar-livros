@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Livro } from "./types";
+import { Livro } from "@/app/generated/prisma";
 
 interface Props {
   livros: Livro[];

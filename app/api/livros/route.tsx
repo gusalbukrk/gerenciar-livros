@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/prisma/client";
 import { LivroCreateInputSchema } from "@/app/generated/zod/index";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   const livros = await prisma.livro.findMany();
   return NextResponse.json(livros);
 }

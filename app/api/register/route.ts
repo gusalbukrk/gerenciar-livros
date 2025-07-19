@@ -29,14 +29,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "User already exists" }, { status: 400 });
   }
 
-  // TODO: move to after the creation, replace body.email with user.email
-  await resend.emails.send({
-    from: "cadastrar-livros@gusalbukrk.com",
-    to: body.email!,
-    subject: "Welcome",
-    react: WelcomeTemplate({ name: body.email }),
-  });
-
   const hashedPassword = await bcrypt.hash(body.senha, 10);
 
   const user = await prisma.user.create({
@@ -44,6 +36,13 @@ export async function POST(request: NextRequest) {
       email: body.email,
       hashedPassword,
     },
+  });
+
+  await resend.emails.send({
+    from: "cadastrar-livros@gusalbukrk.com",
+    to: user.email!,
+    subject: "Welcome",
+    react: WelcomeTemplate({ name: user.email! }),
   });
 
   return NextResponse.json({ email: user.email }, { status: 201 });
