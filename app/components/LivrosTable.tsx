@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { SessionProvider } from "next-auth/react";
+
 import { Livro } from "@/app/generated/prisma";
 import DeleteButton from "./DeleteButton";
 import EditButton from "./EditButton";
@@ -38,7 +40,9 @@ function LivrosTable({
 
   return (
     <>
-      <CreateButton onSuccess={handleCreateSuccess} />
+      <SessionProvider>
+        <CreateButton onSuccess={handleCreateSuccess} />
+      </SessionProvider>
       <div className="overflow-x-auto">
         <table className="table table-md">
           <thead>
