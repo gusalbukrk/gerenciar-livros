@@ -34,7 +34,7 @@ DELETE http://localhost:3000/api/livros/2
 
 ###
 
-POST http://localhost:3000/api/register
+POST http://localhost:3000/api/signup
 Content-Type: application/json
 
 {

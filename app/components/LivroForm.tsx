@@ -63,7 +63,6 @@ function LivroForm({
     }
 
     onSuccess(returnedLivro);
-    console.log(returnedLivro);
     setIsInProgress(false);
     getModalElement(
       method === "POST" ? "create_modal" : `edit_modal_${livro.id}`

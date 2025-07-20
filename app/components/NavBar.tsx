@@ -35,7 +35,12 @@ function NavBar() {
           <li className="mr-2">
             {status === "loading" && <span>...</span>}
             {status === "unauthenticated" && (
-              <Link href="/api/auth/signin">Login</Link>
+              <div className="flex gap-8 !bg-transparent ">
+                <Link href="/auth/signup">Crie uma conta</Link>
+                <Link href="/api/auth/signin">
+                  Faça login para criar/editar/deletar livros
+                </Link>
+              </div>
             )}
             {status === "authenticated" && (
               <button onClick={() => signOut({ callbackUrl: "/" })}>
