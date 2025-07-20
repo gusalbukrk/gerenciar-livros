@@ -13,7 +13,6 @@ interface Props {
   }>;
 }
 
-// TODO: should remove it?
 export const dynamic = "force-dynamic";
 
 async function Page(props: Props) {

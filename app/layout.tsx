@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Ubuntu } from "next/font/google";
+import { Ubuntu, Kanit } from "next/font/google";
 
 import AuthProvider from "./auth/Provider";
 import NavBar from "./components/NavBar";
@@ -11,6 +11,12 @@ const ubuntu = Ubuntu({
   variable: "--font-ubuntu",
   subsets: ["latin"],
   weight: ["400", "700"],
+});
+
+const kanit = Ubuntu({
+  variable: "--font-kanit",
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
 });
 
 export const metadata: Metadata = {
@@ -25,7 +31,9 @@ function RootLayout({
 }>) {
   return (
     <html lang="pt-BR" suppressHydrationWarning data-theme="light">
-      <body className={`antialiased ${ubuntu.variable} max-w-7xl mx-auto`}>
+      <body
+        className={`antialiased ${ubuntu.variable} ${kanit.variable} max-w-7xl mx-auto`}
+      >
         <AuthProvider>
           <ThemeProvider enableSystem={false} defaultTheme="dark">
             <>

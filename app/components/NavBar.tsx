@@ -25,40 +25,42 @@ function NavBar() {
   return (
     <div className="navbar bg-base-100 shadow-sm mb-10 px-0">
       <div className="flex-1 flex items-center">
-        <Image src={logo} alt="Site logo" width={64} priority={true} />
-        <Link href="/" className="btn btn-ghost text-xl">
-          gerenciar livros
+        <Link href="/" className="flex items-center gap-3">
+          <Image src={logo} alt="Site logo" width={64} priority={true} />
+          <h1 className="font-kanit font-bold text-2xl">gerenciar livros</h1>
         </Link>
       </div>
       <div className="flex-none">
         <ul className="menu menu-horizontal px-1">
-          <li className="mr-2">
-            {status === "loading" && <span>...</span>}
-            {status === "unauthenticated" && (
-              <div className="flex gap-8 !bg-transparent ">
+          {status === "unauthenticated" && (
+            <>
+              <li className="mr-2">
                 <Link href="/auth/signup">Crie uma conta</Link>
+              </li>
+              <li className="mr-2">
                 <Link href="/api/auth/signin">
                   Faça login para criar/editar/deletar livros
                 </Link>
-              </div>
-            )}
-            {status === "authenticated" && (
+              </li>
+            </>
+          )}
+          {status === "authenticated" && (
+            <li className="mr-2">
               <button onClick={() => signOut({ callbackUrl: "/" })}>
                 Log out{" "}
                 <span className="text-xm text-gray-400">
                   {session.user?.email}
                 </span>
               </button>
-            )}
-
-            {/* unlike signOut(), link to signout page ask for confirmation before signing out */}
-            {/* <Link href="/api/auth/signout" className="btn">
+            </li>
+          )}
+          {/* unlike signOut(), link to signout page ask for confirmation before signing out */}
+          {/* <Link href="/api/auth/signout" className="btn">
             Log out
           </Link> */}
-          </li>
           <li>
             {mounted && (
-              <label className="flex cursor-pointer gap-2">
+              <label className="flex cursor-pointer gap-2 !bg-transparent">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   width="20"

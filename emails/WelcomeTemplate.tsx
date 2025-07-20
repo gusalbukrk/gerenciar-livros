@@ -26,8 +26,6 @@ function WelcomeTemplateEmail({ name }: { name: string }) {
   );
 }
 
-const body: React.CSSProperties = {
-  backgroundColor: "lightgray",
-};
+const body: React.CSSProperties = {};
 
 export default WelcomeTemplateEmail;

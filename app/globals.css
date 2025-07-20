@@ -9,6 +9,7 @@
 /* when defining theme variables that reference other variables, use the inline option */
 @theme inline {
   --font-ubuntu: var(--font-ubuntu);
+  --font-kanit: var(--font-kanit);
 }
 
 body {

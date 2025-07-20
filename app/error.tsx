@@ -6,7 +6,6 @@ interface Props {
 }
 
 function ErrorPage({ error, reset }: Props) {
-  console.warn(error);
   return (
     <div>
       <p>An error occurred.</p>
