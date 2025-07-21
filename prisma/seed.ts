@@ -1,20 +1,21 @@
 import { PrismaClient } from "../app/generated/prisma/index.js";
-import livrosData from "./livros.json" with { type: "json" };
+import data from "./data.json" with { type: "json" };
 
 const prisma = new PrismaClient();
 
 async function main() {
-  const livrosParaCriar = livrosData.map((livro) => ({
-    // id: livro.id, // Incluir id se for manual e você quiser usar os do JSON
-    titulo: livro.titulo,
-    autor: livro.autor,
-    anoPublicacao: livro.anoPublicacao,
-    genero: livro.genero,
-    estoqueQuantidade: livro.estoqueQuantidade,
-  }));
+  await prisma.livro.deleteMany();
+  await prisma.autor.deleteMany();
+
+  await prisma.$executeRaw`ALTER TABLE Livro AUTO_INCREMENT = 1`;
+  await prisma.$executeRaw`ALTER TABLE Autor AUTO_INCREMENT = 1`;
+
+  await prisma.autor.createMany({
+    data: data.autores,
+  });
 
   await prisma.livro.createMany({
-    data: livrosParaCriar,
+    data: data.livros,
   });
 }
 

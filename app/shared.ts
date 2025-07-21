@@ -1,4 +1,5 @@
 import { createNewSortInstance } from "fast-sort";
+import { Prisma, Livro } from "@/app/generated/prisma";
 
 const getBaseUrl = () =>
   process.env.NODE_ENV === "development"
@@ -18,3 +19,14 @@ export const naturalSort = createNewSortInstance({
 
 export const getModalElement = (elementId: string) =>
   document.getElementById(`${elementId}`) as HTMLDialogElement;
+
+// all props present and required
+const livroWithAutor = Prisma.validator<Prisma.LivroDefaultArgs>()({
+  include: { autor: true },
+});
+export type LivroWithAutor = Prisma.LivroGetPayload<typeof livroWithAutor>;
+// DTOs are containers for data, holding only properties with getter and setter methods
+// id and authorId are excluded and updatedAt and createdAt are optional
+export type LivroWithAutorDto = Prisma.LivroCreateInput & {
+  autor: Prisma.AutorCreateInput;
+};

@@ -27,7 +27,7 @@ function NavBar() {
       <div className="flex-1 flex items-center">
         <Link href="/" className="flex items-center gap-3">
           <Image src={logo} alt="Site logo" width={64} priority={true} />
-          <h1 className="font-kanit font-bold text-2xl">gerenciar livros</h1>
+          <h1 className="font-kanit font-medium text-2xl">gerenciar livros</h1>
         </Link>
       </div>
       <div className="flex-none">
@@ -102,6 +102,7 @@ function NavBar() {
             <Link
               href="https://github.com/gusalbukrk/gerenciar-livros"
               target="_blank"
+              className="!bg-transparent"
             >
               <FaGithub className="text-2xl" />
             </Link>

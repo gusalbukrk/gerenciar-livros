@@ -1,6 +1,5 @@
 import LivrosTable from "./components/LivrosTable";
-import { generateApiUrl, naturalSort } from "./utils";
-import { Livro } from "@/app/generated/prisma";
+import { generateApiUrl, naturalSort, LivroWithAutor } from "./shared";
 import { getServerSession } from "next-auth";
 
 import { authOptions } from "./api/auth/authOptions";
@@ -8,7 +7,7 @@ import { authOptions } from "./api/auth/authOptions";
 interface Props {
   searchParams: Promise<{
     genero: string;
-    ordenarPor: keyof Livro;
+    ordenarPor: keyof LivroWithAutor;
     ordem: "asc" | "desc";
   }>;
 }
@@ -29,7 +28,7 @@ async function Page(props: Props) {
     : "asc";
 
   const resp = await fetch(generateApiUrl("/livros"));
-  const livros: Livro[] = await resp.json();
+  const livros: LivroWithAutor[] = await resp.json();
 
   const livrosSorted =
     ordem === "asc"
@@ -38,7 +37,6 @@ async function Page(props: Props) {
 
   return (
     <main>
-      {/* <h1 className="text-2xl font-bold mb-5">Livros</h1> */}
       <LivrosTable
         livros={livrosSorted}
         searchParamsStr={searchParamsStr}

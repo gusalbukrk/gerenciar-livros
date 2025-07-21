@@ -2,16 +2,15 @@
 
 import { FaPenToSquare } from "react-icons/fa6";
 
-import { Livro } from "../generated/prisma";
 import LivroForm from "./LivroForm";
-import { getModalElement } from "../utils";
+import { getModalElement, LivroWithAutor } from "../shared";
 
 function EditButton({
   livro,
-  onSuccess: onEditSuccess,
+  onEditSuccess,
 }: {
-  livro: Livro;
-  onSuccess: (livroEdited: Livro) => void;
+  livro: LivroWithAutor;
+  onEditSuccess: (livroEdited: LivroWithAutor) => void;
 }) {
   return (
     <>
@@ -23,7 +22,7 @@ function EditButton({
       </button>
       <dialog id={`edit_modal_${livro.id}`} className="modal">
         <div className="modal-box">
-          <LivroForm method="PATCH" livro={livro} onSuccess={onEditSuccess} />
+          <LivroForm livro={livro} onSuccess={onEditSuccess} />
         </div>
       </dialog>
     </>

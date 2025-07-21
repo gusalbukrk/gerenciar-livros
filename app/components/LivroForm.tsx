@@ -3,33 +3,51 @@
 "use client";
 
 import { useState } from "react";
-import { Livro } from "../generated/prisma";
-import { getModalElement } from "../utils";
+import { getModalElement, LivroWithAutor, LivroWithAutorDto } from "../shared";
 import LivroFormField from "./LivroFormField";
 
+const livroEmpty: LivroWithAutorDto = {
+  titulo: "",
+  autor: { nome: "" },
+  genero: "",
+  anoPublicacao: 2025,
+  estoqueQuantidade: 0,
+};
+
 function LivroForm({
-  method,
-  livro,
+  livro, // undefined if creating a new book, otherwise contains the book to edit
   onSuccess,
 }: {
-  method: "POST" | "PATCH";
-  livro: Livro;
-  onSuccess: (livroReturned: Livro) => void;
+  livro?: LivroWithAutor;
+  onSuccess: (livroReturned: LivroWithAutor) => void;
 }) {
-  const [formData, setFormData] = useState<Livro>(livro!);
+  const isCreation = livro === undefined; // if false, is editing
+
+  // LivroWithAutorDto is used when creating a new book, while LivroWithAutor is used when editing an existing book
+  const [formData, setFormData] = useState<LivroWithAutorDto | LivroWithAutor>(
+    livro ?? livroEmpty
+  );
   const [isInProgress, setIsInProgress] = useState(false);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]:
-        name === "anoPublicacao" || name === "estoqueQuantidade"
-          ? Number(value)
-          : value,
-    }));
+    setFormData((prevData) => {
+      if (name === "autor.nome") {
+        return {
+          ...prevData,
+          autor: { nome: value },
+        };
+      }
+      return {
+        ...prevData,
+        [name]:
+          name === "anoPublicacao" || name === "estoqueQuantidade"
+            ? Number(value)
+            : value,
+      };
+    });
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -37,39 +55,43 @@ function LivroForm({
 
     setIsInProgress(true);
 
-    const { id: _, ...body } = formData;
-    const fetchUrl =
-      method === "POST" ? "/api/livros" : `/api/livros/${livro.id}`;
-    //
-    const response = await fetch(fetchUrl, {
-      method,
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(body),
-    });
-    const returnedLivro = await response.json();
+    const body = {
+      titulo: formData.titulo,
+      autor: { nome: formData.autor.nome },
+      genero: formData.genero,
+      anoPublicacao: formData.anoPublicacao,
+      estoqueQuantidade: formData.estoqueQuantidade,
+    };
+
+    const response = await fetch(
+      isCreation ? "/api/livros" : `/api/livros/${livro.id}`,
+      {
+        method: isCreation ? "POST" : "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      }
+    );
+    const responseJson = await response.json();
 
     if (!response.ok) {
-      alert(
-        `Falha ao tentar ${method === "POST" ? "criar" : "editar"} o livro.`
-      );
+      alert(`Falha ao tentar ${isCreation ? "criar" : "editar"} o livro.`);
+      console.error("Erro:", responseJson);
     } else {
       alert(
-        method === "POST"
+        isCreation
           ? "Livro criado com sucesso!"
           : `Livro ${livro.id} editado com sucesso!`
       );
+      onSuccess(responseJson); // responseJson is LivroWithAutor when successful
+      getModalElement(
+        isCreation ? "create_modal" : `edit_modal_${livro.id}`
+      ).close();
+      if (isCreation) setFormData(livroEmpty); // reset formData
     }
 
-    onSuccess(returnedLivro);
     setIsInProgress(false);
-    getModalElement(
-      method === "POST" ? "create_modal" : `edit_modal_${livro.id}`
-    ).close();
-    if (method === "POST") {
-      setFormData(livro); // reset formData
-    }
 
     return;
   };
@@ -84,7 +106,7 @@ function LivroForm({
   return (
     <>
       <h3 className="font-bold text-lg mb-5">
-        {method === "POST" ? (
+        {isCreation ? (
           `Criar livro`
         ) : (
           <>
@@ -94,7 +116,7 @@ function LivroForm({
         )}
       </h3>
       <form
-        id={method === "POST" ? "createForm" : `editForm${livro.id}`}
+        id={isCreation ? "createForm" : `editForm${livro.id}`}
         onKeyDown={handleFormKeyDown}
         onSubmit={handleSubmit}
       >
@@ -109,8 +131,8 @@ function LivroForm({
         <LivroFormField
           label="Autor"
           type="text"
-          name="autor"
-          value={formData.autor}
+          name="autor.nome"
+          value={formData.autor.nome}
           handleChange={handleChange}
         />
         <LivroFormField
@@ -143,7 +165,7 @@ function LivroForm({
           onClick={() =>
             (
               document.querySelector(
-                method === "POST" ? "#createForm" : `#editForm${livro.id}`
+                isCreation ? "#createForm" : `#editForm${livro.id}`
               ) as HTMLFormElement
             ).requestSubmit()
           }

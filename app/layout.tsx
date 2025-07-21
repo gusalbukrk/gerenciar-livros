@@ -13,10 +13,10 @@ const ubuntu = Ubuntu({
   weight: ["400", "700"],
 });
 
-const kanit = Ubuntu({
+const kanit = Kanit({
   variable: "--font-kanit",
   subsets: ["latin"],
-  weight: ["400", "500", "700"],
+  weight: ["500"],
 });
 
 export const metadata: Metadata = {

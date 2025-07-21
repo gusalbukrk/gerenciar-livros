@@ -3,14 +3,14 @@
 import Link from "next/link";
 import { SessionProvider } from "next-auth/react";
 
-import { Livro } from "@/app/generated/prisma";
 import DeleteButton from "./DeleteButton";
 import EditButton from "./EditButton";
 import { useState } from "react";
 import CreateButton from "./CreateButton";
+import { LivroWithAutor } from "../shared";
 
 interface Props {
-  livros: Livro[];
+  livros: LivroWithAutor[];
   searchParamsStr: string;
   isLogged: boolean;
 }
@@ -20,17 +20,17 @@ function LivrosTable({
   searchParamsStr,
   isLogged,
 }: Props) {
-  const [livros, setLivros] = useState<Livro[]>(initialLivros);
+  const [livros, setLivros] = useState<LivroWithAutor[]>(initialLivros);
 
   const handleDeleteSuccess = (id: number) => {
     setLivros((prevLivros) => prevLivros.filter((livro) => livro.id !== id));
   };
 
-  const handleCreateSuccess = (livroCreated: Livro) => {
+  const handleCreateSuccess = (livroCreated: LivroWithAutor) => {
     setLivros((prevLivros) => [...prevLivros, livroCreated]);
   };
 
-  const handleEditSuccess = (livroEdited: Livro) => {
+  const handleEditSuccess = (livroEdited: LivroWithAutor) => {
     setLivros((prevLivros) =>
       prevLivros.map((l) => {
         return l.id === livroEdited.id ? livroEdited : l;
@@ -41,7 +41,7 @@ function LivrosTable({
   return (
     <>
       <SessionProvider>
-        <CreateButton onSuccess={handleCreateSuccess} />
+        <CreateButton onCreateSuccess={handleCreateSuccess} />
       </SessionProvider>
       <div className="overflow-x-auto">
         <table className="table table-md">
@@ -81,13 +81,16 @@ function LivrosTable({
               <tr key={livro.id} className="hover:bg-base-300">
                 <td>{livro.id}</td>
                 <td>{livro.titulo}</td>
-                <td>{livro.autor}</td>
+                <td>{livro.autor.nome}</td>
                 <td>{livro.anoPublicacao}</td>
                 <td>{livro.genero}</td>
                 <td>{livro.estoqueQuantidade}</td>
                 {isLogged && (
                   <td className="flex gap-5">
-                    <EditButton livro={livro} onSuccess={handleEditSuccess} />
+                    <EditButton
+                      livro={livro}
+                      onEditSuccess={handleEditSuccess}
+                    />
                     <DeleteButton
                       id={livro.id}
                       onDeleteSuccess={handleDeleteSuccess}

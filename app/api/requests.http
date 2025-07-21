@@ -13,7 +13,7 @@ Content-Type: application/json
 
 {
   "titulo": "Título 50",
-  "autor": "Autor 2",
+  "autor": { "nome": "Autor 2" },
   "anoPublicacao": 2023,
   "genero": "Ação",
   "estoqueQuantidade": 5
@@ -21,11 +21,15 @@ Content-Type: application/json
 
 ###
 
-PATCH http://localhost:3000/api/livros/1
+PATCH http://localhost:3000/api/livros/3
 Content-Type: application/json
 
 {
-  "titulo": "Título 1"
+  "titulo": "Título 1",
+  "autor": { "nome": "Autor 1" },
+  "anoPublicacao": 2023,
+  "genero": "Ficção Científica",
+  "estoqueQuantidade": 10
 }
 
 ###
