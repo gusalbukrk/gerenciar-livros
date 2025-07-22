@@ -1,5 +1,6 @@
 "use client";
 
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
@@ -27,13 +28,20 @@ function SignUpForm() {
       },
       body: JSON.stringify({ email, senha: password }),
     });
+    const responseJson = await response.json();
 
     if (!response.ok) {
-      alert(`Falha ao tentar criar a conta.`);
+      alert(
+        `Falha ao tentar criar a conta. Abra o console para mais detalhes.`
+      );
+      console.log("Erro:", responseJson);
       setIsInProgress(false);
     } else {
       alert("Conta criada com sucesso!");
-      router.push("/api/auth/signin");
+      signIn("credentials", {
+        email,
+        password,
+      });
     }
 
     return;
@@ -42,48 +50,69 @@ function SignUpForm() {
   return (
     <form className="flex flex-col" onSubmit={handleSubmit}>
       <div className="form-control mb-4">
-        <label className="label mb-2">
-          <span className="label-text">Email</span>
+        <label className="input validator w-full">
+          <svg
+            className="h-[1em] opacity-50"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+          >
+            <g
+              strokeLinejoin="round"
+              strokeLinecap="round"
+              strokeWidth="2.5"
+              fill="none"
+              stroke="currentColor"
+            >
+              <rect width="20" height="16" x="2" y="4" rx="2"></rect>
+              <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
+            </g>
+          </svg>
+          <input
+            name="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="mail@site.com"
+            required
+          />
         </label>
-        <input
-          type="email"
-          name="email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="input input-bordered w-full"
-          required
-        />
+        <div className="validator-hint hidden">Digite um email válido</div>
       </div>
       <div className="form-control mb-4">
-        <label className="label mb-2">
-          <span className="label-text">Password</span>
-        </label>
-        <div className="relative">
+        <label className="input validator w-full">
+          <svg
+            className="h-[1em] opacity-50"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 24 24"
+          >
+            <g
+              strokeLinejoin="round"
+              strokeLinecap="round"
+              strokeWidth="2.5"
+              fill="none"
+              stroke="currentColor"
+            >
+              <path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path>
+              <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
+            </g>
+          </svg>
           <input
-            type={showPassword ? "text" : "password"}
+            type="password"
             name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className="input input-bordered w-full pr-10"
             required
+            placeholder="Password"
+            // @ts-ignore
+            minLength="6"
+            title="Deve ter no mínimo 6 caracteres"
           />
-          <button
-            type="button"
-            onClick={togglePasswordVisibility}
-            className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600"
-            aria-label={showPassword ? "Hide password" : "Show password"}
-          >
-            {showPassword ? (
-              <FaEyeSlash className="h-5 w-5" />
-            ) : (
-              <FaEye className="h-5 w-5" />
-            )}
-          </button>
-        </div>
+        </label>
+        <p className="validator-hint hidden">Deve ter no mínimo 6 caracteres</p>
       </div>
       <button
         type="submit"
-        className="btn ml-auto px-8"
+        className="btn ml-auto px-8 mt-2"
         disabled={isInProgress}
       >
         Criar

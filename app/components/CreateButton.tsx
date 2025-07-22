@@ -26,8 +26,11 @@ function CreateButton({
       <dialog id={`create_modal`} className="modal">
         <div className="modal-box">
           <LivroForm onSuccess={onCreateSuccess} />
-          {/* <h1>my modal</h1> */}
         </div>
+        {/* click outside to close */}
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
       </dialog>
     </>
   );

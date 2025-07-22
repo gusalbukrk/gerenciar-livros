@@ -20,9 +20,13 @@ function DeleteButton({ id, onDeleteSuccess }: Props) {
         "Content-Type": "application/json",
       },
     });
+    const responseJson = await response.json();
 
     if (!response.ok) {
-      alert("Falha ao tentar excluir o livro.");
+      alert(
+        "Falha ao tentar excluir o livro. Abra o console para mais detalhes."
+      );
+      console.log("Erro:", responseJson);
     } else {
       alert(`Livro ${id} deletado com sucesso!`);
     }

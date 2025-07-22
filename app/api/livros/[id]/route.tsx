@@ -96,7 +96,7 @@ export async function DELETE(request: NextRequest, props: Props) {
   } catch (error) {
     if ((error as { code: string }).code === "P2025") {
       // livro doesn't exist
-      return NextResponse.json({}, { status: 404 });
+      return NextResponse.json({ error: "Livro não existe" }, { status: 404 });
     }
   }
 }

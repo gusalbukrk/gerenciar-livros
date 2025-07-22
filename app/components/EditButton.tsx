@@ -24,6 +24,10 @@ function EditButton({
         <div className="modal-box">
           <LivroForm livro={livro} onSuccess={onEditSuccess} />
         </div>
+        {/* click outside to close */}
+        <form method="dialog" className="modal-backdrop">
+          <button>close</button>
+        </form>
       </dialog>
     </>
   );

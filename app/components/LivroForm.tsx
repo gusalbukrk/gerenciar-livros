@@ -76,7 +76,9 @@ function LivroForm({
     const responseJson = await response.json();
 
     if (!response.ok) {
-      alert(`Falha ao tentar ${isCreation ? "criar" : "editar"} o livro.`);
+      alert(
+        `Falha ao tentar ${isCreation ? "criar" : "editar"} o livro. Abra o console para mais detalhes.`
+      );
       console.error("Erro:", responseJson);
     } else {
       alert(
@@ -158,6 +160,9 @@ function LivroForm({
         />
       </form>
       <div className="modal-action">
+        <form method="dialog">
+          <button className="btn">Fechar</button>
+        </form>
         <button
           type="submit"
           className="btn"
@@ -172,9 +177,6 @@ function LivroForm({
         >
           Salvar
         </button>
-        <form method="dialog">
-          <button className="btn">Fechar</button>
-        </form>
       </div>
     </>
   );

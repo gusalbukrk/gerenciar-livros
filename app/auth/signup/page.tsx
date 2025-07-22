@@ -12,7 +12,7 @@ async function SignUpPage() {
   }
 
   return (
-    <main className="max-w-lg mx-auto">
+    <main className="max-w-md mx-auto">
       <h3 className="font-bold text-lg mb-5">Criar conta</h3>
       <SignUpForm />
     </main>
