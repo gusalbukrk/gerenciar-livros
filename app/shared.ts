@@ -1,5 +1,5 @@
 import { createNewSortInstance } from "fast-sort";
-import { Prisma, Livro } from "@/app/generated/prisma";
+import { Livro, Prisma } from "@/app/generated/prisma";
 
 const getBaseUrl = () =>
   process.env.NODE_ENV === "development"
@@ -30,3 +30,8 @@ export type LivroWithAutor = Prisma.LivroGetPayload<typeof livroWithAutor>;
 export type LivroWithAutorDto = Prisma.LivroCreateInput & {
   autor: Prisma.AutorCreateInput;
 };
+
+export type LivroInfoGeneratedByIA = Pick<
+  Livro,
+  "titulo" | "genero" | "anoPublicacao"
+> & { autor: string };

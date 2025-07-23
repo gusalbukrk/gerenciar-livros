@@ -3,6 +3,7 @@ import { generateApiUrl, naturalSort, LivroWithAutor } from "./shared";
 import { getServerSession } from "next-auth";
 
 import { authOptions } from "./api/auth/authOptions";
+import generateBookInfoWithAI from "./api/livros/ia/generateBookInfoWithAI";
 
 interface Props {
   searchParams: Promise<{

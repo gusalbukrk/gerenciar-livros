@@ -3,8 +3,14 @@
 "use client";
 
 import { useState } from "react";
-import { getModalElement, LivroWithAutor, LivroWithAutorDto } from "../shared";
+import {
+  getModalElement,
+  LivroInfoGeneratedByIA,
+  LivroWithAutor,
+  LivroWithAutorDto,
+} from "../shared";
 import LivroFormField from "./LivroFormField";
+import generateBookInfoWithAI from "../api/livros/ia/generateBookInfoWithAI";
 
 const livroEmpty: LivroWithAutorDto = {
   titulo: "",
@@ -27,7 +33,8 @@ function LivroForm({
   const [formData, setFormData] = useState<LivroWithAutorDto | LivroWithAutor>(
     livro ?? livroEmpty
   );
-  const [isInProgress, setIsInProgress] = useState(false);
+  const [isInProgress, setIsInProgress] = useState(false); // creation or edition in progress
+  const [isAIInProgress, setIsAIInProgress] = useState(false); // AI generation in progress
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -105,6 +112,34 @@ function LivroForm({
     }
   };
 
+  const handleIA = async () => {
+    setIsAIInProgress(true);
+
+    try {
+      const response = await fetch(`/api/livros/ia?titulo=${formData.titulo}`);
+      const responseJson = (await response.json()) as LivroInfoGeneratedByIA;
+
+      if (!response.ok) {
+        throw responseJson;
+      }
+
+      setFormData((prevData) => ({
+        ...prevData,
+        titulo: responseJson.titulo,
+        autor: { nome: responseJson.autor },
+        genero: responseJson.genero,
+        anoPublicacao: responseJson.anoPublicacao,
+      }));
+    } catch (error) {
+      alert(
+        "Erro ao gerar informações do livro com IA. Verifique o console para mais detalhes."
+      );
+      console.log(error);
+    }
+
+    setIsAIInProgress(false);
+  };
+
   return (
     <>
       <h3 className="font-bold text-lg mb-5">
@@ -129,13 +164,25 @@ function LivroForm({
           name="titulo"
           value={formData.titulo}
           handleChange={handleChange}
+          disabled={isAIInProgress}
         />
+        <div className="form-control mb-4 flex">
+          <button
+            className="btn ml-auto"
+            onClick={handleIA}
+            type="button"
+            disabled={isAIInProgress}
+          >
+            Gerar com IA
+          </button>
+        </div>
         <LivroFormField
           label="Autor"
           type="text"
           name="autor.nome"
           value={formData.autor.nome}
           handleChange={handleChange}
+          disabled={isAIInProgress}
         />
         <LivroFormField
           label="Gênero"
@@ -143,6 +190,7 @@ function LivroForm({
           name="genero"
           value={formData.genero}
           handleChange={handleChange}
+          disabled={isAIInProgress}
         />
         <LivroFormField
           label="Ano de publicação"
@@ -150,6 +198,7 @@ function LivroForm({
           name="anoPublicacao"
           value={formData.anoPublicacao.toString()}
           handleChange={handleChange}
+          disabled={isAIInProgress}
         />
         <LivroFormField
           label="Quantidade em estoque"
@@ -166,7 +215,7 @@ function LivroForm({
         <button
           type="submit"
           className="btn"
-          disabled={isInProgress}
+          disabled={isInProgress || isAIInProgress}
           onClick={() =>
             (
               document.querySelector(

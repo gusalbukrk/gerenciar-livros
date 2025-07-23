@@ -103,7 +103,7 @@ function SignUpForm() {
             onChange={(e) => setPassword(e.target.value)}
             required
             placeholder="Password"
-            // @ts-ignore
+            // @ts-expect-error custom field for daisyui validation
             minLength="6"
             title="Deve ter no mínimo 6 caracteres"
           />

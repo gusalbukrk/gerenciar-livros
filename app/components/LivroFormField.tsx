@@ -7,6 +7,7 @@ interface LivroFormFieldProps {
   handleChange: (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => void;
+  disabled?: boolean;
 }
 
 function LivroFormField({
@@ -16,6 +17,7 @@ function LivroFormField({
   minlength,
   value,
   handleChange,
+  disabled,
 }: LivroFormFieldProps) {
   return (
     <div className="form-control mb-4">
@@ -29,6 +31,7 @@ function LivroFormField({
         value={value}
         onChange={handleChange}
         className="input input-bordered w-full"
+        disabled={disabled}
         required
       />
     </div>
