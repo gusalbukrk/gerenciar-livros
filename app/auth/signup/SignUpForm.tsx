@@ -12,10 +12,6 @@ function SignUpForm() {
   const [isInProgress, setIsInProgress] = useState(false);
   const router = useRouter();
 
-  const togglePasswordVisibility = () => {
-    setShowPassword((prev) => !prev);
-  };
-
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -43,7 +39,6 @@ function SignUpForm() {
         password,
       });
     }
-
     return;
   };
 
@@ -78,26 +73,11 @@ function SignUpForm() {
         </label>
         <div className="validator-hint hidden">Digite um email válido</div>
       </div>
-      <div className="form-control mb-4">
+      <div className="form-control mb-4 relative">
+        {" "}
         <label className="input validator w-full">
-          <svg
-            className="h-[1em] opacity-50"
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-          >
-            <g
-              strokeLinejoin="round"
-              strokeLinecap="round"
-              strokeWidth="2.5"
-              fill="none"
-              stroke="currentColor"
-            >
-              <path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"></path>
-              <circle cx="16.5" cy="7.5" r=".5" fill="currentColor"></circle>
-            </g>
-          </svg>
           <input
-            type="password"
+            type={showPassword ? "text" : "password"}
             name="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
@@ -108,6 +88,13 @@ function SignUpForm() {
             title="Deve ter no mínimo 6 caracteres"
           />
         </label>
+        <span
+          className="absolute right-3 -translate-y-1/2 cursor-pointer text-gray-500 hover:text-gray-700"
+          style={{ top: "1.25rem" }} // before was using class top-1/2, but didn't centered when there were error messages to display below the input
+          onClick={() => setShowPassword((prev) => !prev)}
+        >
+          {showPassword ? <FaEyeSlash size={20} /> : <FaEye size={20} />}
+        </span>
         <p className="validator-hint hidden">Deve ter no mínimo 6 caracteres</p>
       </div>
       <button

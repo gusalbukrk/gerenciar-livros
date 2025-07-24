@@ -3,21 +3,15 @@
 "use client";
 
 import { useState } from "react";
-import {
-  getModalElement,
-  LivroInfoGeneratedByIA,
-  LivroWithAutor,
-  LivroWithAutorDto,
-} from "../shared";
+import { getModalElement, LivroWithAutor, LivroWithAutorDto } from "../shared";
 import LivroFormField from "./LivroFormField";
-import generateBookInfoWithAI from "../api/livros/ia/generateBookInfoWithAI";
 
 const livroEmpty: LivroWithAutorDto = {
   titulo: "",
   autor: { nome: "" },
   genero: "",
   anoPublicacao: 2025,
-  estoqueQuantidade: 0,
+  estoqueQuantidade: 1,
 };
 
 function LivroForm({
@@ -112,27 +106,35 @@ function LivroForm({
     }
   };
 
-  const handleIA = async () => {
+  const handleAIOrScraping = async (e: React.MouseEvent<HTMLButtonElement>) => {
+    console.log("handleAIOrScraping called");
+    const actionType = (e.target as HTMLButtonElement).dataset.actionType!;
+
     setIsAIInProgress(true);
 
     try {
-      const response = await fetch(`/api/livros/ia?titulo=${formData.titulo}`);
-      const responseJson = (await response.json()) as LivroInfoGeneratedByIA;
+      const response = await fetch(
+        `/api/livros/${actionType}?titulo=${formData.titulo}`
+      );
+      const responseJson = (await response.json()) as LivroWithAutorDto;
 
       if (!response.ok) {
         throw responseJson;
       }
 
-      setFormData((prevData) => ({
-        ...prevData,
-        titulo: responseJson.titulo,
-        autor: { nome: responseJson.autor },
-        genero: responseJson.genero,
-        anoPublicacao: responseJson.anoPublicacao,
-      }));
+      setFormData(
+        (prevData) =>
+          ({
+            ...prevData,
+            titulo: responseJson.titulo,
+            autor: { nome: responseJson.autor.nome },
+            genero: responseJson.genero,
+            anoPublicacao: responseJson.anoPublicacao,
+          }) as unknown as LivroWithAutorDto
+      );
     } catch (error) {
       alert(
-        "Erro ao gerar informações do livro com IA. Verifique o console para mais detalhes."
+        "Erro ao tentar gerar/extrair informações do livro. Verifique o console para mais detalhes."
       );
       console.log(error);
     }
@@ -167,14 +169,26 @@ function LivroForm({
           disabled={isAIInProgress}
         />
         <div className="form-control mb-4 flex">
-          <button
-            className="btn ml-auto"
-            onClick={handleIA}
-            type="button"
-            disabled={isAIInProgress}
-          >
-            Gerar com IA
-          </button>
+          <div className="ml-auto flex gap-4">
+            <button
+              data-action-type="scrape"
+              className="btn"
+              onClick={handleAIOrScraping}
+              type="button"
+              disabled={isAIInProgress}
+            >
+              Extrair da Amazon
+            </button>
+            <button
+              data-action-type="ai"
+              className="btn"
+              onClick={handleAIOrScraping}
+              type="button"
+              disabled={isAIInProgress}
+            >
+              Gerar com IA
+            </button>
+          </div>
         </div>
         <LivroFormField
           label="Autor"
@@ -196,7 +210,7 @@ function LivroForm({
           label="Ano de publicação"
           type="number"
           name="anoPublicacao"
-          value={formData.anoPublicacao.toString()}
+          value={formData.anoPublicacao?.toString()}
           handleChange={handleChange}
           disabled={isAIInProgress}
         />
@@ -210,7 +224,12 @@ function LivroForm({
       </form>
       <div className="modal-action">
         <form method="dialog">
-          <button className="btn">Fechar</button>
+          <button
+            className="btn"
+            onClick={() => setFormData(isCreation ? livroEmpty : livro)}
+          >
+            Fechar
+          </button>
         </form>
         <button
           type="submit"

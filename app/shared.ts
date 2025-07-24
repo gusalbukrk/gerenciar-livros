@@ -1,5 +1,6 @@
 import { createNewSortInstance } from "fast-sort";
 import { Livro, Prisma } from "@/app/generated/prisma";
+import { Autor } from "./generated/zod";
 
 const getBaseUrl = () =>
   process.env.NODE_ENV === "development"
@@ -25,13 +26,9 @@ const livroWithAutor = Prisma.validator<Prisma.LivroDefaultArgs>()({
   include: { autor: true },
 });
 export type LivroWithAutor = Prisma.LivroGetPayload<typeof livroWithAutor>;
-// DTOs are containers for data, holding only properties with getter and setter methods
-// id and authorId are excluded and updatedAt and createdAt are optional
-export type LivroWithAutorDto = Prisma.LivroCreateInput & {
-  autor: Prisma.AutorCreateInput;
-};
 
-export type LivroInfoGeneratedByIA = Pick<
+// DTOs are containers for data, holding only properties with getter and setter methods
+export type LivroWithAutorDto = Pick<
   Livro,
-  "titulo" | "genero" | "anoPublicacao"
-> & { autor: string };
+  "titulo" | "genero" | "anoPublicacao" | "estoqueQuantidade"
+> & { autor: Pick<Autor, "nome"> };

@@ -45,3 +45,11 @@ Content-Type: application/json
   "email": "gusalbukrk@outlook.com",
   "senha": "123456"
 }
+
+###
+
+GET http://localhost:3000/api/livros/ai?titulo=harry potter azkaban
+
+###
+
+GET http://localhost:3000/api/livros/scrape?titulo=senhor aneis torres

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import generateBookInfoWithAI from "./generateBookInfoWithAI";
+import generateLivroInfoWithAI from "./generatLivroInfoWithAI";
 
 export async function GET(request: NextRequest) {
   const titulo = request.nextUrl.searchParams.get("titulo");
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const livro = await generateBookInfoWithAI(titulo);
+    const livro = await generateLivroInfoWithAI(titulo);
     return NextResponse.json(livro);
   } catch (error) {
     return NextResponse.json({ error }, { status: 500 });
