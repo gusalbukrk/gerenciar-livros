@@ -2,7 +2,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { getModalElement, LivroWithAutor, LivroWithAutorDto } from "../shared";
 import LivroFormField from "./LivroFormField";
 
@@ -142,111 +142,134 @@ function LivroForm({
     setIsAIInProgress(false);
   };
 
+  const cleanFormFields = () => setFormData(isCreation ? livroEmpty : livro);
+
+  useEffect(() => {
+    const handleGlobalKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") cleanFormFields();
+    };
+
+    document.addEventListener("keydown", handleGlobalKeyDown);
+
+    return () => {
+      document.removeEventListener("keydown", handleGlobalKeyDown);
+    };
+  }, []);
+
   return (
-    <>
-      <h3 className="font-bold text-lg mb-5">
-        {isCreation ? (
-          `Criar livro`
-        ) : (
-          <>
-            Editar livro
-            <span className="text-gray-400 ml-2">id: {livro.id}</span>
-          </>
-        )}
-      </h3>
-      <form
-        id={isCreation ? "createForm" : `editForm${livro.id}`}
-        onKeyDown={handleFormKeyDown}
-        onSubmit={handleSubmit}
-      >
-        <LivroFormField
-          label="Titulo"
-          type="text"
-          minlength={3}
-          name="titulo"
-          value={formData.titulo}
-          handleChange={handleChange}
-          disabled={isAIInProgress}
-        />
-        <div className="form-control mb-4 flex">
-          <div className="ml-auto flex gap-4">
-            <button
-              data-action-type="scrape"
-              className="btn"
-              onClick={handleAIOrScraping}
-              type="button"
+    <dialog
+      id={isCreation ? `create_modal` : `edit_modal_${livro.id}`}
+      className="modal"
+    >
+      <div className="modal-box">
+        {/* <LivroForm onSuccess={onCreateSuccess} /> */}
+        <>
+          <h3 className="font-bold text-lg mb-5">
+            {isCreation ? (
+              `Criar livro`
+            ) : (
+              <>
+                Editar livro
+                <span className="text-gray-400 ml-2">id: {livro.id}</span>
+              </>
+            )}
+          </h3>
+          <form
+            id={isCreation ? "createForm" : `editForm${livro.id}`}
+            onKeyDown={handleFormKeyDown}
+            onSubmit={handleSubmit}
+          >
+            <LivroFormField
+              label="Titulo"
+              type="text"
+              minlength={3}
+              name="titulo"
+              value={formData.titulo}
+              handleChange={handleChange}
               disabled={isAIInProgress}
-            >
-              Extrair da Amazon
-            </button>
-            <button
-              data-action-type="ai"
-              className="btn"
-              onClick={handleAIOrScraping}
-              type="button"
+            />
+            <div className="form-control mb-4 flex">
+              <div className="ml-auto flex gap-4">
+                <button
+                  data-action-type="scrape"
+                  className="btn"
+                  onClick={handleAIOrScraping}
+                  type="button"
+                  disabled={isAIInProgress}
+                >
+                  Extrair da Amazon
+                </button>
+                <button
+                  data-action-type="ai"
+                  className="btn"
+                  onClick={handleAIOrScraping}
+                  type="button"
+                  disabled={isAIInProgress}
+                >
+                  Gerar com IA
+                </button>
+              </div>
+            </div>
+            <LivroFormField
+              label="Autor"
+              type="text"
+              name="autor.nome"
+              value={formData.autor.nome}
+              handleChange={handleChange}
               disabled={isAIInProgress}
+            />
+            <LivroFormField
+              label="Gênero"
+              type="text"
+              name="genero"
+              value={formData.genero}
+              handleChange={handleChange}
+              disabled={isAIInProgress}
+            />
+            <LivroFormField
+              label="Ano de publicação"
+              type="number"
+              name="anoPublicacao"
+              value={formData.anoPublicacao?.toString()}
+              handleChange={handleChange}
+              disabled={isAIInProgress}
+            />
+            <LivroFormField
+              label="Quantidade em estoque"
+              type="number"
+              name="estoqueQuantidade"
+              value={formData.estoqueQuantidade.toString()}
+              handleChange={handleChange}
+            />
+          </form>
+          <div className="modal-action">
+            <form method="dialog">
+              <button className="btn" onClick={cleanFormFields}>
+                Fechar
+              </button>
+            </form>
+            <button
+              type="submit"
+              className="btn"
+              disabled={isInProgress || isAIInProgress}
+              onClick={() =>
+                (
+                  document.querySelector(
+                    isCreation ? "#createForm" : `#editForm${livro.id}`
+                  ) as HTMLFormElement
+                ).requestSubmit()
+              }
             >
-              Gerar com IA
+              Salvar
             </button>
           </div>
-        </div>
-        <LivroFormField
-          label="Autor"
-          type="text"
-          name="autor.nome"
-          value={formData.autor.nome}
-          handleChange={handleChange}
-          disabled={isAIInProgress}
-        />
-        <LivroFormField
-          label="Gênero"
-          type="text"
-          name="genero"
-          value={formData.genero}
-          handleChange={handleChange}
-          disabled={isAIInProgress}
-        />
-        <LivroFormField
-          label="Ano de publicação"
-          type="number"
-          name="anoPublicacao"
-          value={formData.anoPublicacao?.toString()}
-          handleChange={handleChange}
-          disabled={isAIInProgress}
-        />
-        <LivroFormField
-          label="Quantidade em estoque"
-          type="number"
-          name="estoqueQuantidade"
-          value={formData.estoqueQuantidade.toString()}
-          handleChange={handleChange}
-        />
-      </form>
-      <div className="modal-action">
-        <form method="dialog">
-          <button
-            className="btn"
-            onClick={() => setFormData(isCreation ? livroEmpty : livro)}
-          >
-            Fechar
-          </button>
-        </form>
-        <button
-          type="submit"
-          className="btn"
-          disabled={isInProgress || isAIInProgress}
-          onClick={() =>
-            (
-              document.querySelector(
-                isCreation ? "#createForm" : `#editForm${livro.id}`
-              ) as HTMLFormElement
-            ).requestSubmit()
-          }
-        >
-          Salvar
-        </button>
+        </>
       </div>
-    </>
+      {/* click outside to close */}
+      <form method="dialog" className="modal-backdrop">
+        <button onClick={cleanFormFields}>close</button>
+      </form>
+    </dialog>
   );
 }
 

@@ -23,15 +23,7 @@ function CreateButton({
       >
         <FaPlus className="text-base" /> Criar livro
       </button>
-      <dialog id={`create_modal`} className="modal">
-        <div className="modal-box">
-          <LivroForm onSuccess={onCreateSuccess} />
-        </div>
-        {/* click outside to close */}
-        <form method="dialog" className="modal-backdrop">
-          <button>close</button>
-        </form>
-      </dialog>
+      <LivroForm onSuccess={onCreateSuccess} />
     </>
   );
 }

@@ -30,6 +30,8 @@ function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
+    // without suppressHydrationWarning, the HTML will have a warning about hydration mismatch
+    // that happens because of next-themes
     <html lang="pt-BR" suppressHydrationWarning data-theme="light">
       <body
         className={`antialiased ${ubuntu.variable} ${kanit.variable} max-w-7xl mx-auto`}
