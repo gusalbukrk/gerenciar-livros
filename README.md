@@ -2,6 +2,8 @@
 
 Prova Técnica para a vaga de Analista de Sistemas Jr. A descrição da prova está em [prova.pdf](./prova.pdf).
 
+Uma versão simplificada deste projeto, que foi desenvolvida sem frameworks e não requer um servidor back-end, está disponível em [gerenciar-livros-nativo](https://github.com/gusalbukrk/gerenciar-livros-nativo).
+
 ## Tech stack
 
 - **Linguagem**: TypeScript
