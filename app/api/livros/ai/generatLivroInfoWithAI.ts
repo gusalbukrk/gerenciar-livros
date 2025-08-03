@@ -11,8 +11,9 @@ const extractJsonFromString = extractJsonFromStringBase<LivroWithAutorDto>;
 
 const openai = new OpenAI({
   // baseURL: "https://openrouter.ai/api/v1",
-  baseURL: "https://api.naga.ac/v1",
-  apiKey: process.env.NAGAAI_API_KEY,
+  // baseURL: "https://api.naga.ac/v1",
+  baseURL: "https://generativelanguage.googleapis.com/v1beta/openai/", // https://ai.google.dev/gemini-api/docs/openai
+  apiKey: process.env.GEMINI_API_KEY,
 });
 
 const generatePrompt = (livroName: string) =>
@@ -23,8 +24,9 @@ const generatePrompt = (livroName: string) =>
 
 export default async function generateLivroInfoWithAI(livroName: string) {
   const completion = await openai.chat.completions.create({
-    // model: "google/gemma-3n-e2b-it:free",
-    model: "gemini-2.0-flash-001",
+    // model: "google/gemma-3n-e2b-it:free", // model used w/ openrouter
+    // model: "gemini-2.0-flash-001", // model used w/ naga
+    model: "gemini-2.0-flash",
     messages: [
       {
         role: "user",
