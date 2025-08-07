@@ -15,7 +15,18 @@ Uma versão simplificada deste projeto, que foi desenvolvida sem frameworks e n�
     - Tailwind: framework CSS.
     - DaisyUI: biblioteca de componentes para Tailwind.
 
-## Como executar a aplicação
+## Funcionalidades
+
+- CRUD de livros
+- Autenticação de usuários
+- Preenchimento automático de metadados do livro através de IA ou web scraping
+
+## Screenshots
+
+<img src="./screenshots/homepage.png" alt="Homepage">
+<img src="./screenshots/modal.png" alt="Homepage">
+
+## Como executar
 
 ### Pré-requisitos
 
